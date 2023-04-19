@@ -13,6 +13,8 @@ export class JMSUploadFile {
     state: string;
     /**服务器校验信息*/
     auth: string;
+    /**Sec-WebSocket-Protocol请求头 */
+    secWebSocketProtocol: string;
 
     onProgress: (sender: JMSUploadFile, totalBytes, serverReceived) => void;
     onCompleted: (sender: JMSUploadFile,tranId:string) => void;
@@ -70,7 +72,7 @@ export class JMSUploadFile {
    
 
     private initWebSocket() {
-        this.webSocket = new WebSocket(this.serverUrl);
+        this.webSocket = new WebSocket(this.serverUrl, this.secWebSocketProtocol);
         var originalType = this.webSocket.binaryType;
 
         this.webSocket.onerror = (ev) => {

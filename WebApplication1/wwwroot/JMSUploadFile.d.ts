@@ -13,6 +13,8 @@ export declare class JMSUploadFile {
     state: string;
     /**服务器校验信息*/
     auth: string;
+    /**Sec-WebSocket-Protocol请求头 */
+    secWebSocketProtocol: string;
     onProgress: (sender: JMSUploadFile, totalBytes: any, serverReceived: any) => void;
     onCompleted: (sender: JMSUploadFile, tranId: string) => void;
     onError: (sender: JMSUploadFile, err: any) => void;

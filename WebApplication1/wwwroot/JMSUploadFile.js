@@ -55,7 +55,7 @@ var JMSUploadFile = /** @class */ (function () {
     }
     JMSUploadFile.prototype.initWebSocket = function () {
         var _this = this;
-        this.webSocket = new WebSocket(this.serverUrl);
+        this.webSocket = new WebSocket(this.serverUrl, this.secWebSocketProtocol);
         var originalType = this.webSocket.binaryType;
         this.webSocket.onerror = function (ev) {
             _this.onSocketError();
