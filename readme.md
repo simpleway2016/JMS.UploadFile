@@ -14,8 +14,8 @@
 
         public void OnError(UploadHeader header)
         {
-           fs.Dispose();
-           File.Delete($"./{header.FileName}");
+            fs.Close();
+            fs.Dispose();
         }
 
         public void OnReceivedFileContent(UploadHeader header, byte[] data, int length, long filePosition)
@@ -26,6 +26,7 @@
         public void OnUploadCompleted(UploadHeader header)
         {
             fs.Close();
+            fs.Dispose();
         }
     }
 ```
