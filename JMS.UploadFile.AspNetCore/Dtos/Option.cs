@@ -17,7 +17,7 @@ namespace JMS.UploadFile.AspNetCore
             this.RouteName = routeName;
         }
 
-		public Type ReceptionType { get; set; }
+		internal Type ReceptionType { get; set; }
 
 		public string RouteName { get;  }
 

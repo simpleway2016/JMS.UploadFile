@@ -25,7 +25,10 @@ namespace WebApplication1
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseJmsUploadFile<MyUploadReception>(new JMS.UploadFile.AspNetCore.Option("uploadtest"));
+            app.UseJmsUploadFile<MyUploadReception>(new JMS.UploadFile.AspNetCore.Option("uploadtest")
+            {
+                MaxFileLength = 1024 * 1024 * 100
+            }) ;
             app.UseStaticFiles();
 
             app.Run(async (context) =>

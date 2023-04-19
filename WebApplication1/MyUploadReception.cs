@@ -9,7 +9,9 @@ namespace WebApplication1
         FileStream fs;
         public Task OnBeginUploadFile(UploadHeader header, bool isContinue)
         {
-            fs = File.OpenWrite($"./{header.FileName}");
+            if (Directory.Exists($"./temp") == false)
+                Directory.CreateDirectory($"./temp");
+            fs = File.OpenWrite($"./temp/{header.FileName}");
             return Task.CompletedTask;
         }
 

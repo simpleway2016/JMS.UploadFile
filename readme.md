@@ -32,7 +32,10 @@
 ```
 然后在 app.Run 之前注册这个接收类
 ``` cs
- app.UseJmsUploadFile<MyUploadReception>(new JMS.UploadFile.AspNetCore.Option("uploadtest"));
+            app.UseJmsUploadFile<MyUploadReception>(new JMS.UploadFile.AspNetCore.Option("uploadtest")
+            {
+                MaxFileLength = 1024 * 1024 * 100  //文件限制在100m
+            }) ;
 
 ```
 
