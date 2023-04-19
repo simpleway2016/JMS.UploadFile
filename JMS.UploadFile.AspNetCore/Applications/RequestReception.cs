@@ -28,7 +28,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
 
             if (author != null)
             {
-                var authRet = httpContext.AuthenticateAsync(author.AuthenticationSchemes).ConfigureAwait(false).GetAwaiter().GetResult();
+                var authRet = await httpContext.AuthenticateAsync(author.AuthenticationSchemes);
 
                 if (authRet.Succeeded == false)
                 {
