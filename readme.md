@@ -1,5 +1,7 @@
 大文件上传处理中间件，支持断点续传
 
+引用 nuget 包：JMS.UploadFile.AspNetCore
+
 先定义一个接收类：
 ``` cs
     public class MyUploadReception : IUploadFileReception
