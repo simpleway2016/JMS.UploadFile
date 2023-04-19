@@ -15,7 +15,7 @@ namespace WebApplication1
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            services.AddJmsTokenAspNetCore(null, new string[] { "Authorization", "Sec-WebSocket-Protocol" });
             return services.BuildServiceProvider();
         }
 
