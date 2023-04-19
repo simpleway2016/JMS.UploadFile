@@ -1,10 +1,12 @@
 ﻿using JMS.UploadFile.AspNetCore;
 using JMS.UploadFile.AspNetCore.Applications;
+using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 namespace WebApplication1
 {
+    
     public class MyUploadReception : IUploadFileReception
     {
         FileStream fs;

@@ -4,9 +4,11 @@
 
 先定义一个接收类：
 ``` cs
-    //[Authorize] // 如果要进行身份验证，解开这里注释，并通过this.User获取用户信息
+    //[Authorize] // 如果要进行身份验证，可以加入Microsoft.AspNetCore.Authorization.Authorize特性，并通过this.User获取用户信息
     public class MyUploadReception : IUploadFileReception
     {
+        public ClaimsPrincipal User { get; set; }
+        
         FileStream fs;
         public void OnBeginUploadFile(UploadHeader header, bool isContinue)
         {

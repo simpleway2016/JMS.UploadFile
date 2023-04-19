@@ -14,6 +14,8 @@ namespace WebApplication1
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+
             return services.BuildServiceProvider();
         }
 
@@ -24,17 +26,26 @@ namespace WebApplication1
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseStaticFiles();
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
 
             app.UseJmsUploadFile<MyUploadReception>(new JMS.UploadFile.AspNetCore.Option("uploadtest")
             {
                 MaxFileLength = 1024 * 1024 * 100
             }) ;
-            app.UseStaticFiles();
+           
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
         }
     }
 }
