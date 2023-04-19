@@ -28,7 +28,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
 
         public async Task Handle(HttpContext httpContext,WebSocket webSocket)
         {
-            _uploadFileReception.OnBeginUploadFile(_uploadHeader, _uploadHeader.Position == 0 ? false : true);
+            await _uploadFileReception.OnBeginUploadFile(_uploadHeader, _uploadHeader.Position == 0 ? false : true);
             var lastReportTime = DateTime.Now.AddSeconds(-100);
             var bs = new byte[10240];
             bool finished = false;
@@ -50,7 +50,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
                         }
                         if (result.MessageType == WebSocketMessageType.Binary)
                         {
-                            this.onReceived(this._uploadHeader.TranId.GetValueOrDefault(), _uploadHeader.FileName, buffer.Array, result.Count, _uploadHeader.Position);
+                           await this.onReceived(this._uploadHeader.TranId.GetValueOrDefault(), _uploadHeader.FileName, buffer.Array, result.Count, _uploadHeader.Position);
                             _uploadHeader.Position += result.Count;
 
                             if (_uploadHeader.Position > _uploadHeader.Length)
@@ -60,7 +60,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
                             }
                             else if (_uploadHeader.Position == _uploadHeader.Length)
                             {
-                                this.onFinish(this._uploadHeader.TranId.GetValueOrDefault(), _uploadHeader.FileName);
+                                await this.onFinish(this._uploadHeader.TranId.GetValueOrDefault(), _uploadHeader.FileName);
                                 finished = true;
 
                                 await sendString(webSocket, "-1");
@@ -92,7 +92,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
             {
                 try
                 {
-                    _uploadFileReception.OnError(_uploadHeader);
+                    await _uploadFileReception.OnError(_uploadHeader);
                 }
                 catch (Exception ex)
                 {
@@ -108,14 +108,14 @@ namespace JMS.UploadFile.AspNetCore.Applications
             return webSocket.SendAsync(output, WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        void onReceived(int tranid, string filename, byte[] data, int length, long filePosition)
+        Task onReceived(int tranid, string filename, byte[] data, int length, long filePosition)
         {
-            _uploadFileReception.OnReceivedFileContent(_uploadHeader, data, length, filePosition);
+            return _uploadFileReception.OnReceivedFileContent(_uploadHeader, data, length, filePosition);
         }
 
-        void onFinish(int tranid, string filename)
+        Task onFinish(int tranid, string filename)
         {
-            _uploadFileReception.OnUploadCompleted(_uploadHeader);
+            return _uploadFileReception.OnUploadCompleted(_uploadHeader);
         }
     }
 }

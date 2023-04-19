@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace JMS.UploadFile.AspNetCore
 {
@@ -14,7 +15,7 @@ namespace JMS.UploadFile.AspNetCore
         /// </summary>
         /// <param name="header"></param>
         /// <param name="isContinue">是否断点续传</param>
-        void OnBeginUploadFile(UploadHeader header, bool isContinue);
+        Task OnBeginUploadFile(UploadHeader header, bool isContinue);
 
         /// <summary>
         /// 接收到文件内容
@@ -23,18 +24,18 @@ namespace JMS.UploadFile.AspNetCore
         /// <param name="data"></param>
         /// <param name="length">data的长度</param>
         /// <param name="filePosition">接收到的数据所在的position</param>
-        void OnReceivedFileContent(UploadHeader header, byte[] data, int length, long filePosition);
+        Task OnReceivedFileContent(UploadHeader header, byte[] data, int length, long filePosition);
 
         /// <summary>
         /// 文件上传完毕
         /// </summary>
         /// <param name="header"></param>
-        void OnUploadCompleted(UploadHeader header);
+        Task OnUploadCompleted(UploadHeader header);
 
         /// <summary>
         /// 传输错误
         /// </summary>
         /// <param name="header"></param>
-        void OnError(UploadHeader header);
+        Task OnError(UploadHeader header);
     }
 }
