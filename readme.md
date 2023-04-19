@@ -12,7 +12,11 @@
         FileStream fs;
         public void OnBeginUploadFile(UploadHeader header, bool isContinue)
         {
-            fs = File.OpenWrite($"./{header.FileName}");
+            fs = new FileStream($"./{header.FileName}",FileMode.OpenOrCreate , FileAccess.Write , FileShare.ReadWrite);
+            if (isContinue)
+            {
+                fs.Seek(header.Position, SeekOrigin.Begin);
+            }
         }
 
         public void OnError(UploadHeader header)

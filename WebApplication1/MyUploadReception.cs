@@ -17,7 +17,11 @@ namespace WebApplication1
         {
             if (Directory.Exists($"./temp") == false)
                 Directory.CreateDirectory($"./temp");
-            fs = File.OpenWrite($"./temp/{header.FileName}");
+            fs = new FileStream($"./temp/{header.FileName}",FileMode.OpenOrCreate , FileAccess.Write , FileShare.ReadWrite);
+            if (isContinue)
+            {
+                fs.Seek(header.Position, SeekOrigin.Begin);
+            }
             return Task.CompletedTask;
         }
 
