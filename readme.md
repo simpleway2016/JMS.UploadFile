@@ -4,6 +4,7 @@
 
 先定义一个接收类：
 ``` cs
+    //[Authorize] // 如果要进行身份验证，解开这里注释，并通过this.User获取用户信息
     public class MyUploadReception : IUploadFileReception
     {
         FileStream fs;

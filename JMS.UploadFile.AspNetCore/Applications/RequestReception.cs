@@ -1,10 +1,14 @@
 ﻿using JMS.UploadFile.AspNetCore.Dtos;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,12 +21,33 @@ namespace JMS.UploadFile.AspNetCore.Applications
     internal class RequestReception
     {
         static int transcationId = 0;
+
+        async Task auth(HttpContext httpContext, WebSocket socket,Type uploadFileReceptionType,IUploadFileReception uploadFileReception)
+        {
+            var author = uploadFileReceptionType.GetCustomAttribute<AuthorizeAttribute>();
+
+            if (author != null)
+            {
+                var authRet = httpContext.AuthenticateAsync(author.AuthenticationSchemes).ConfigureAwait(false).GetAwaiter().GetResult();
+
+                if (authRet.Succeeded == false)
+                {
+                    await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "401,身份验证失败", CancellationToken.None);
+                    return;
+                }
+                uploadFileReception.User = authRet.Principal;
+            }
+
+        }
+
         /// <summary>
         /// 处理请求
         /// </summary>
         /// <param name="httpContext"></param>
         public async Task Interview(HttpContext httpContext, WebSocket socket, Option option)
         {
+            //身份验证
+
             var bs = new byte[2048];
             while (true)
             {
@@ -82,8 +107,13 @@ namespace JMS.UploadFile.AspNetCore.Applications
                                 }
                             }
                             IUploadFileReception uploadFileReception = (IUploadFileReception)Activator.CreateInstance(option.ReceptionType, parameters);
-                            var uploaderHandler = new UploadHandler(option, header, uploadFileReception);
-                            await uploaderHandler.Handle(httpContext, socket);
+                            await auth(httpContext, socket, option.ReceptionType , uploadFileReception);                           
+
+                            if (socket.State == WebSocketState.Open)
+                            {
+                                var uploaderHandler = new UploadHandler(option, header, uploadFileReception);
+                                await uploaderHandler.Handle(httpContext, socket);
+                            }
                             break;
 
                         }

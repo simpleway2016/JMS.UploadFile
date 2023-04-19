@@ -1,12 +1,16 @@
 ﻿using JMS.UploadFile.AspNetCore;
 using JMS.UploadFile.AspNetCore.Applications;
 using System.IO;
+using System.Security.Claims;
 using System.Threading.Tasks;
 namespace WebApplication1
 {
     public class MyUploadReception : IUploadFileReception
     {
         FileStream fs;
+
+        public ClaimsPrincipal User { get; set; }
+
         public Task OnBeginUploadFile(UploadHeader header, bool isContinue)
         {
             if (Directory.Exists($"./temp") == false)
