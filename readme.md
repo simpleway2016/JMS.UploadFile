@@ -79,7 +79,7 @@ tsconfig.json
     "target": "es5",
     "allowJs": true,
     "types": [
-      "./node_modules/jack-websocket-uploadfile",
+      "./node_modules/jms-uploadfile",
     ]
   }
 }
@@ -87,6 +87,6 @@ tsconfig.json
 ```
 **import**
 ```
-import WebSocketUploadFile from "jack-websocket-uploadfile"
+import JMSUploadFile from "jms-uploadfile"
 
 ```
