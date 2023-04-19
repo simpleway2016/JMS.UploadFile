@@ -14,7 +14,8 @@
 
         public void OnError(UploadHeader header)
         {
-           
+           fs.Dispose();
+           File.Delete($"./{header.FileName}");
         }
 
         public void OnReceivedFileContent(UploadHeader header, byte[] data, int length, long filePosition)

@@ -1,5 +1,7 @@
 ﻿using JMS.UploadFile.AspNetCore.Dtos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -88,7 +90,14 @@ namespace JMS.UploadFile.AspNetCore.Applications
 
             if (!finished)
             {
-                _uploadFileReception.OnError(_uploadHeader);
+                try
+                {
+                    _uploadFileReception.OnError(_uploadHeader);
+                }
+                catch (Exception ex)
+                {
+                    httpContext.RequestServices.GetService<ILogger<UploadHandler>>()?.LogError(ex, "");
+                }
             }
         }
 
