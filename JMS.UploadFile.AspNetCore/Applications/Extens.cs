@@ -48,7 +48,6 @@ namespace Microsoft.AspNetCore.Builder
             option.ReceptionType = typeof(T);
             Global.AllOptions[option.RouteName] = option;
             
-            Global.ServiceProvider = app.ApplicationServices;
             return app;
         }
     }
