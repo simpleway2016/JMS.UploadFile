@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 namespace WebApplication1
 {
-    
+    [Authorize]
     public class MyUploadReception : IUploadFileReception
     {
         FileStream fs;

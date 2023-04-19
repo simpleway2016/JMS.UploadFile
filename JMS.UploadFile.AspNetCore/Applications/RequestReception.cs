@@ -46,7 +46,24 @@ namespace JMS.UploadFile.AspNetCore.Applications
         /// <param name="httpContext"></param>
         public async Task Interview(HttpContext httpContext, WebSocket socket, Option option)
         {
+          
+            var constructor = option.ReceptionType.GetConstructors()[0];
+            var parameterInfos = constructor.GetParameters();
+            var parameters = new object[parameterInfos.Length];
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                try
+                {
+                    parameters[i] = httpContext.RequestServices.GetService(parameterInfos[i].ParameterType);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"初始化{option.ReceptionType.FullName}出错,{ex.Message}");
+                }
+            }
+            IUploadFileReception uploadFileReception = (IUploadFileReception)Activator.CreateInstance(option.ReceptionType, parameters);
             //身份验证
+            await auth(httpContext, socket, option.ReceptionType, uploadFileReception);
 
             var bs = new byte[2048];
             while (true)
@@ -92,22 +109,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
 
                             bs = null;
 
-                            var constructor = option.ReceptionType.GetConstructors()[0];
-                            var parameterInfos = constructor.GetParameters();
-                            var parameters = new object[parameterInfos.Length];
-                            for (int i = 0; i < parameters.Length; i++)
-                            {
-                                try
-                                {
-                                    parameters[i] = httpContext.RequestServices.GetService(parameterInfos[i].ParameterType);
-                                }
-                                catch (Exception ex) 
-                                {
-                                    throw new Exception($"初始化{option.ReceptionType.FullName}出错,{ex.Message}");
-                                }
-                            }
-                            IUploadFileReception uploadFileReception = (IUploadFileReception)Activator.CreateInstance(option.ReceptionType, parameters);
-                            await auth(httpContext, socket, option.ReceptionType , uploadFileReception);                           
+                                                  
 
                             if (socket.State == WebSocketState.Open)
                             {

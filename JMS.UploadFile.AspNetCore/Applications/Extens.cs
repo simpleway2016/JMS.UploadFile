@@ -1,8 +1,11 @@
 ﻿using JMS.UploadFile.AspNetCore;
 using JMS.UploadFile.AspNetCore.Applications;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -36,7 +39,25 @@ namespace Microsoft.AspNetCore.Builder
                             path = path.Substring(1);
                         if (Global.AllOptions.TryGetValue(path, out Option currentOption))
                         {
-                            var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                            WebSocket webSocket;
+                            string protocol = null;
+                            if (context.Request.Headers.TryGetValue("Sec-WebSocket-Protocol", out StringValues protocols))
+                            {
+                                protocol = protocols.FirstOrDefault();
+                                if (string.IsNullOrWhiteSpace(protocol))
+                                {
+                                    protocol = null;
+                                }
+                            }
+                            
+                            if (protocol != null) {
+                            
+                                webSocket = await context.WebSockets.AcceptWebSocketAsync(protocol);
+                            }
+                            else
+                            {
+                                webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                            }
                             await requestReception.Interview(context, webSocket, currentOption);
                             return;
                         }

@@ -16,11 +16,27 @@
     <div id="info"></div>
 </body>
 <script lang="ja">
+   // var websocket = new WebSocket("ws://localhost:5000", "WyJ7XCJkXCI6XCJhYmNcIi+x-.cImVcIjoxNjgxOTE5NTk1fSIsIjg0NUQxQ0NBNjA1MkIzN0NBRjMwRjVBMEEzQzFBOTMyIl0");
     var info = document.body.querySelector("#info");
 
     var obj = new exports.JMSUploadFile(document.body.querySelector("#file") , "uploadtest");
     obj.state = "test info";
     obj.auth = "my auth";
+
+    async function getToken() {
+        var ret = await fetch("main/GetToken",
+            {
+                method: 'GET'
+            });
+        if (ret.status == 200) {
+            obj.secWebSocketProtocol = await ret.text();
+        }
+        else
+            alert("error");
+    }
+
+    getToken();
+
     obj.onProgress = function (sender, total, sended) {
         info.innerHTML += sended + "," + total+"<br>";
     }
