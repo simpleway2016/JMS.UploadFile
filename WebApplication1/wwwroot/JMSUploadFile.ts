@@ -63,6 +63,9 @@ export class JMSUploadFile {
             this.serverUrl = "wss://";
             serverUrl = serverUrl.replace("https://", "");
         }
+        else {
+            this.serverUrl = "";
+        }
 
         this.serverUrl += serverUrl + routeName;
        

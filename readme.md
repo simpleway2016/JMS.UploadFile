@@ -61,6 +61,7 @@
     var JMSUploadFile = require("jms-uploadfile");
     var fileObj = document.body.querySelector("#file");
     var obj = new JMSUploadFile(fileObj , "uploadtest");
+    //如果js和asp.net不在同一个站点，那么需要传一下asp.net的基本url=>  var obj = new JMSUploadFile(fileObj , "uploadtest" , "http://127.0.0.1:5000");
     obj.onProgress = function (sender, total, sended) {
         info.innerHTML = sended + "," + total;
     }
