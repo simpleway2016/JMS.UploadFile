@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,22 +24,29 @@ namespace JMS.UploadFile.AspNetCore.Applications
     {
         static int transcationId = 0;
 
-        async Task auth(HttpContext httpContext, WebSocket socket,Type uploadFileReceptionType,IUploadFileReception uploadFileReception)
+        async Task<ClaimsPrincipal> auth(HttpContext httpContext, WebSocket socket,Type uploadFileReceptionType,IUploadFileReception uploadFileReception)
         {
             var author = uploadFileReceptionType.GetCustomAttribute<AuthorizeAttribute>();
 
             if (author != null)
             {
-                var authRet = await httpContext.AuthenticateAsync(author.AuthenticationSchemes);
-
-                if (authRet.Succeeded == false)
+                try
                 {
-                    await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "401,身份验证失败", CancellationToken.None);
-                    return;
-                }
-                uploadFileReception.User = authRet.Principal;
-            }
+                    var authRet = await httpContext.AuthenticateAsync(author.AuthenticationSchemes);
 
+                    if (authRet.Succeeded == false)
+                    {
+                        await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "401,身份验证失败", CancellationToken.None);
+                        return null;
+                    }
+                    return authRet.Principal;
+                }
+                catch (Exception ex)
+                {
+                    httpContext.RequestServices.GetService<ILogger<RequestReception>>()?.LogError(ex, "身份验证异常");
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -63,7 +72,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
             }
             IUploadFileReception uploadFileReception = (IUploadFileReception)Activator.CreateInstance(option.ReceptionType, parameters);
             //身份验证
-            await auth(httpContext, socket, option.ReceptionType, uploadFileReception);
+            var user = await auth(httpContext, socket, option.ReceptionType, uploadFileReception);
 
             var bs = new byte[2048];
             while (true)
@@ -113,6 +122,7 @@ namespace JMS.UploadFile.AspNetCore.Applications
 
                             if (socket.State == WebSocketState.Open)
                             {
+                                header.User = user;
                                 var uploaderHandler = new UploadHandler(option, header, uploadFileReception);
                                 await uploaderHandler.Handle(httpContext, socket);
                             }

@@ -11,7 +11,6 @@ namespace WebApplication1
     {
         FileStream fs;
 
-        public ClaimsPrincipal User { get; set; }
 
         public Task OnBeginUploadFile(UploadHeader header, bool isContinue)
         {

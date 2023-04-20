@@ -11,10 +11,7 @@ namespace JMS.UploadFile.AspNetCore
     /// </summary>
     public interface IUploadFileReception
     {
-        /// <summary>
-        /// 身份信息对象
-        /// </summary>
-        ClaimsPrincipal User { get; set; }
+       
         /// <summary>
         /// 开始文件的传输
         /// </summary>

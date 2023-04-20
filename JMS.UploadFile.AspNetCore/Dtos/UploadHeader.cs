@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 
 namespace JMS.UploadFile.AspNetCore
 {
     public class UploadHeader
     {
+        /// <summary>
+        /// 身份信息对象
+        /// </summary>
+        public ClaimsPrincipal User { get; set; }
 
         private int? _tranid;
         /// <summary>
