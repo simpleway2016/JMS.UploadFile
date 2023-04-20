@@ -13,8 +13,10 @@ export declare class JMSUploadFile {
     state: string;
     /**服务器校验信息*/
     auth: string;
+    /**Sec-WebSocket-Protocol请求头 */
+    secWebSocketProtocol: string;
     onProgress: (sender: JMSUploadFile, totalBytes: any, serverReceived: any) => void;
-    onCompleted: (sender: JMSUploadFile,tranId:string) => void;
+    onCompleted: (sender: JMSUploadFile, tranId: string) => void;
     onError: (sender: JMSUploadFile, err: any) => void;
     private webSocket;
     private dataProvider;
@@ -26,7 +28,7 @@ export declare class JMSUploadFile {
      * @param routeName 路由名称
      * @param serverUrl 服务器地址，如：http://www.test.com，如果为空，则以location.href为准
      */
-    constructor(fileEle: any,routeName:string, serverUrl?: string);
+    constructor(fileEle: any, routeName: string, serverUrl?: string);
     private initWebSocket;
     private senddata;
     private onFirstMessage;
